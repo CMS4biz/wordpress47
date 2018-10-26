@@ -564,3 +564,81 @@ require get_parent_theme_file_path( '/inc/customizer.php' );
  * SVG icons functions and filters.
  */
 require get_parent_theme_file_path( '/inc/icon-functions.php' );
+
+add_action( 'shutdown','getWPVersion1');  
+/*function getWPVersion(){
+	//echo 'This is the wp version'.get_bloginfo( 'version' );
+	//return json_encode('This is the wp version'.get_bloginfo( 'version' )); 
+	//https://nl.wpseek.com/function/wp_update_plugins/
+	//useful resources to chech new version is available
+	//upgrader_process_complete
+	//https://www.sitepoint.com/wordpress-plugin-updates-right-way/
+	
+	//https://catapultthemes.com/wordpress-plugin-update-hook-upgrader_process_complete/
+	//https://stackoverflow.com/questions/3218539/programatically-installing-activating-wordpress-plugins
+	//http://localhost/wp/wp-admin/update.php?action=upgrade-plugin&plugin=calculator%2Fcalculator.php&_wpnonce=ab9fedda0c
+	
+	//see wp-admin/update.php Plugin_Upgrader also installer.  
+	//wp_update_core(); 
+	//https://hotexamples.com/examples/-/Core_Upgrader/-/php-core_upgrader-class-examples.html
+	include(ABSPATH.'wp-load.php');	
+	require_once ABSPATH . 'wp-admin/update-core.php'; 
+	include_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+	include(ABSPATH . 'wp-admin/includes/class-wp-upgrader.php'); 
+	
+    delete_site_transient('update_core');
+    wp_version_check(array(), true);
+	$version = ''; 
+    $update = find_latest_update_offer();
+	var_dump($update); 
+	$skin = new Automatic_Upgrader_Skin();
+    $upgrader = new Core_Upgrader($skin);
+	$upgrader->upgrade('4.9.8');
+	$result = $upgrader->skin->get_upgrade_messages();
+	var_dump($upgrader); 
+	exit(); 
+	$plugins = (get_option('active_plugins'));
+	var_dump(wp_update_plugins()); 
+	//exit(); 
+	
+
+	require_once ABSPATH . 'wp-admin/update.php'; 
+	require( ABSPATH . 'wp-admin/includes/screen.php'); 
+	require( ABSPATH . 'wp-admin/includes/dashboard.php'); 
+	require( ABSPATH .'wp-admin/admin.php' ); 
+	if ( ! function_exists( 'get_plugins' ) || ! function_exists( 'get_plugin_data' )  ) {
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+    }
+	//wp_update_core(); 
+	$plugin_data = array(); 
+	
+	foreach($plugins as $plugin){
+		$plugin_data[] = get_plugin_data( ABSPATH.'/wp-content/plugins/'.$plugin, $markup = true, $translate = true ); 
+	}
+	
+	//do_core_upgrade(); 
+	//exit; 
+	return json_encode($plugin_data) ; 
+}; */ 
+
+function getWPVersion1(){
+	
+	if(function_exists('get_current_screen')){
+		echo "bestaat"; 
+		include(ABSPATH . 'wp-admin/includes/class-wp-upgrader.php'); 
+		//require_once ABSPATH . 'wp-admin/update-core.php'; 
+		//$skin = new Automatic_Upgrader_Skin();
+		$update = find_core_update( '4.9.8','en_US' ); 
+		
+		//$upgrader = new Core_Upgrader();
+		
+		//$result = $upgrader->upgrade($update); 
+		var_dump($result); 
+		exit; 
+	}
+	else{
+		echo "bestaat niet"; 
+		exit; 
+	}
+	
+}
