@@ -564,7 +564,7 @@ require get_parent_theme_file_path( '/inc/customizer.php' );
  * SVG icons functions and filters.
  */
 require get_parent_theme_file_path( '/inc/icon-functions.php' );
-
+/*
 add_action( 'shutdown','getWPVersion1');  
 /*function getWPVersion(){
 	//echo 'This is the wp version'.get_bloginfo( 'version' );
@@ -620,7 +620,7 @@ add_action( 'shutdown','getWPVersion1');
 	//exit; 
 	return json_encode($plugin_data) ; 
 }; */ 
-
+/*
 function getWPVersion1(){
 	
 	if(function_exists('get_current_screen')){
@@ -641,4 +641,64 @@ function getWPVersion1(){
 		exit; 
 	}
 	
-}
+}*/ 
+
+
+add_action( 'rest_api_init', function () {
+  register_rest_route( 'burozero/v1', '/version/', array(
+    'methods' => 'GET',
+    'callback' => 'getWPVersion2',
+  ) );
+});
+
+
+
+//add_action('wp_loaded','getWPVersion'); 
+function getWPVersion2(){
+	//echo 'This is the wp version'.get_bloginfo( 'version' );
+	//return json_encode('This is the wp version'.get_bloginfo( 'version' )); 
+	//https://nl.wpseek.com/function/wp_update_plugins/
+	//useful resources to chech new version is available
+	//upgrader_process_complete
+	//https://www.sitepoint.com/wordpress-plugin-updates-right-way/
+	
+	//https://catapultthemes.com/wordpress-plugin-update-hook-upgrader_process_complete/
+	//https://stackoverflow.com/questions/3218539/programatically-installing-activating-wordpress-plugins
+	//http://localhost/wp/wp-admin/update.php?action=upgrade-plugin&plugin=calculator%2Fcalculator.php&_wpnonce=ab9fedda0c
+	//http://localhost/wp/wp-json/burozero/v1/version/
+	//see wp-admin/update.php Plugin_Upgrader also installer.   
+	include(ABSPATH . 'wp-admin/includes/class-wp-upgrader.php'); 
+	include(ABSPATH . 'wp-admin/includes/update.php'); 
+	//include(ABSPATH . 'wp-admin/update-core.php');
+	
+	
+	if(function_exists('find_core_update')){
+		$update = find_core_update( '4.9.8','en_US' ); 
+		$upgrader = new Core_Upgrader();
+		$result = $upgrader->upgrade($update);
+		return json_encode($result) ; 
+	}
+	else{
+		return json_encode('works not') ; 
+	}
+	
+	
+	$plugins = (get_option('active_plugins'));
+	var_dump(wp_update_plugins()); 
+	exit(); 
+	//require_once ABSPATH . 'wp-admin/update-core.php'; 
+	if ( ! function_exists( 'get_plugins' ) || ! function_exists( 'get_plugin_data' )  ) {
+        require_once ABSPATH . 'wp-admin/includes/plugin.php';
+    }
+	
+	$plugin_data = array(); 
+	
+	foreach($plugins as $plugin){
+		$plugin_data[] = get_plugin_data( ABSPATH.'/wp-content/plugins/'.$plugin, $markup = true, $translate = true ); 
+	}
+	
+	//do_core_upgrade(); 
+	//exit; 
+	return json_encode($plugin_data) ; 
+}; 
+ 
