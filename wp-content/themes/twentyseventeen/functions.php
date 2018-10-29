@@ -664,16 +664,19 @@ function getWPVersion2(){
 	
 	//https://catapultthemes.com/wordpress-plugin-update-hook-upgrader_process_complete/
 	//https://stackoverflow.com/questions/3218539/programatically-installing-activating-wordpress-plugins
-	//http://localhost/wp/wp-admin/update.php?action=upgrade-plugin&plugin=calculator%2Fcalculator.php&_wpnonce=ab9fedda0c
+	//http://localhost/wp/wp-admin/update.php?actiACon=upgrade-plugin&plugin=calculator%2Fcalculator.php&_wpnonce=ab9fedda0c
 	//http://localhost/wp/wp-json/burozero/v1/version/
 	//see wp-admin/update.php Plugin_Upgrader also installer.   
 	include(ABSPATH . 'wp-admin/includes/class-wp-upgrader.php'); 
 	include(ABSPATH . 'wp-admin/includes/update.php'); 
-	//include(ABSPATH . 'wp-admin/update-core.php');
+	include(ABSPATH . 'wp-admin/includes/file.php'); 
+	include(ABSPATH . '/wp-load.php' );
+	
 	
 	
 	if(function_exists('find_core_update')){
-		$update = find_core_update( '4.9.8','en_US' ); 
+		$update = find_core_update( '4.9.1','en_US' ); 
+		//return json_encode($update) ; 
 		$upgrader = new Core_Upgrader();
 		$result = $upgrader->upgrade($update);
 		return json_encode($result) ; 
@@ -681,6 +684,18 @@ function getWPVersion2(){
 	else{
 		return json_encode('works not') ; 
 	}
+	 
+	
+	
+	
+	//https://make.wordpress.org/core/2013/10/25/the-definitive-guide-to-disabling-auto-updates-in-wordpress-3-7/
+	$result = wp_maybe_auto_update();
+	return json_encode($result); 
+	
+	//include(ABSPATH . 'wp-admin/update-core.php');
+	
+	
+	
 	
 	
 	$plugins = (get_option('active_plugins'));
